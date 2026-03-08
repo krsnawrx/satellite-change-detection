@@ -15,9 +15,12 @@ st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
 @st.cache_resource
 def load_model():
     from huggingface_hub import hf_hub_download
+    import os
     model_path = hf_hub_download(
         repo_id='krsnawrx/bihar-flood-mapper',
-        filename='best_model.pth'
+        filename='best_model.pth',
+        repo_type='model',
+        token=os.environ.get('HF_TOKEN')
     )
     model = smp.Unet(
         encoder_name='resnet34',
@@ -79,15 +82,19 @@ if st.button("Run Detection", type="primary"):
 
     if use_demo:
         from huggingface_hub import hf_hub_download
+        import os
+        token = os.environ.get('HF_TOKEN')
         before_path = hf_hub_download(
             repo_id='krsnawrx/bihar-flood-mapper',
             filename='patna_before_flood_2023.tif',
-            repo_type='model'
+            repo_type='model',
+            token=token
         )
         after_path = hf_hub_download(
             repo_id='krsnawrx/bihar-flood-mapper',
             filename='patna_after_flood_2023.tif',
-            repo_type='model'
+            repo_type='model',
+            token=token
         )
     elif before_file and after_file:
         with tempfile.NamedTemporaryFile(suffix='.tif', delete=False) as f:
