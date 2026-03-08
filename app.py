@@ -5,9 +5,9 @@ import rasterio
 import segmentation_models_pytorch as smp
 import matplotlib.pyplot as plt
 import tempfile
-from PIL import Image
+import os
 
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+DEVICE = 'cpu'  # Streamlit Cloud has no GPU
 PATCH_SIZE = 256
 
 st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
@@ -15,7 +15,6 @@ st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
 @st.cache_resource
 def load_model():
     from huggingface_hub import hf_hub_download
-    import os
     model_path = hf_hub_download(
         repo_id='krsnawrx/bihar-flood-mapper',
         filename='best_model.pth',
@@ -33,11 +32,12 @@ def load_model():
     model.eval()
     return model
 
-def preprocess(path):
+def load_tif(path, subsample=3):
     with rasterio.open(path) as src:
         img = np.stack([src.read(i) for i in range(1, 5)], axis=-1).astype(np.float32)
     img = np.nan_to_num(img, nan=0.0, posinf=3000.0, neginf=0.0)
-    return np.clip(img / 3000.0, 0, 1)
+    img = np.clip(img / 3000.0, 0, 1)
+    return img[::subsample, ::subsample, :]
 
 def predict(model, before, after):
     h, w = before.shape[:2]
@@ -58,7 +58,7 @@ def predict(model, before, after):
     count_map = np.maximum(count_map, 1)
     flood_map /= count_map
     binary = (flood_map > 0.5).astype(np.uint8)
-    area_km2 = round(binary.sum() * 100 / 1e6, 2)
+    area_km2 = round(binary.sum() * 100 * 9 / 1e6, 2)
     return flood_map, binary, area_km2
 
 def norm(x):
@@ -82,7 +82,6 @@ if st.button("Run Detection", type="primary"):
 
     if use_demo:
         from huggingface_hub import hf_hub_download
-        import os
         token = os.environ.get('HF_TOKEN')
         before_path = hf_hub_download(
             repo_id='krsnawrx/bihar-flood-mapper',
@@ -108,8 +107,8 @@ if st.button("Run Detection", type="primary"):
         st.stop()
 
     with st.spinner("Running flood detection..."):
-        before = preprocess(before_path)
-        after = preprocess(after_path)
+        before = load_tif(before_path, subsample=3)
+        after = load_tif(after_path, subsample=3)
         flood_map, binary, area_km2 = predict(model, before, after)
 
     st.success("Detection complete")
@@ -117,20 +116,15 @@ if st.button("Run Detection", type="primary"):
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-    with rasterio.open(before_path) as src:
-        before_rgb = norm(np.stack([src.read(1), src.read(2), src.read(3)], axis=-1) / 3000.0)
-    with rasterio.open(after_path) as src:
-        after_rgb = norm(np.stack([src.read(1), src.read(2), src.read(3)], axis=-1) / 3000.0)
-
-    axes[0].imshow(before_rgb)
+    axes[0].imshow(norm(before[:, :, :3]))
     axes[0].set_title('Before Flood', fontsize=14)
     axes[0].axis('off')
 
-    axes[1].imshow(after_rgb)
+    axes[1].imshow(norm(after[:, :, :3]))
     axes[1].set_title('After Flood', fontsize=14)
     axes[1].axis('off')
 
-    axes[2].imshow(after_rgb)
+    axes[2].imshow(norm(after[:, :, :3]))
     axes[2].imshow(binary, alpha=0.5, cmap='Blues')
     axes[2].set_title(f'Flood Detection — {area_km2} sq km flooded', fontsize=14)
     axes[2].axis('off')
