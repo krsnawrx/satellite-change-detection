@@ -4,7 +4,6 @@ from dataset import get_dataloaders
 import numpy as np
 import os
 
-# Config
 EPOCHS = 20
 BATCH_SIZE = 8
 LR = 1e-4
@@ -22,7 +21,6 @@ model = smp.Unet(
     activation=None
 ).to(DEVICE)
 
-# Combined Dice + BCE loss - more stable than Dice alone
 loss_fn = smp.losses.DiceLoss(mode='binary', from_logits=True)
 bce_fn = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor([10.0]).to(DEVICE))
 

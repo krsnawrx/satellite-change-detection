@@ -1,7 +1,5 @@
 import numpy as np
 import os
-
-# Check a few patches for bad values
 for i in range(1, 6):
     before = np.load(f'data/patches/before/{i:05d}.npy').astype(np.float32)
     after = np.load(f'data/patches/after/{i:05d}.npy').astype(np.float32)
