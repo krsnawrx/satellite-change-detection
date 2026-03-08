@@ -8,13 +8,17 @@ import tempfile
 from PIL import Image
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-MODEL_PATH = '../satellite-change-detection/models/best_model.pth'
 PATCH_SIZE = 256
 
 st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
 
 @st.cache_resource
 def load_model():
+    from huggingface_hub import hf_hub_download
+    model_path = hf_hub_download(
+        repo_id='krsnawrx/bihar-flood-mapper',
+        filename='best_model.pth'
+    )
     model = smp.Unet(
         encoder_name='resnet34',
         encoder_weights=None,
@@ -22,7 +26,7 @@ def load_model():
         classes=1,
         activation=None
     ).to(DEVICE)
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+    model.load_state_dict(torch.load(model_path, map_location=DEVICE))
     model.eval()
     return model
 
