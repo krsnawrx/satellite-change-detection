@@ -78,8 +78,17 @@ if st.button("Run Detection", type="primary"):
     model = load_model()
 
     if use_demo:
-        before_path = '../satellite-change-detection/data/patna_before_flood_2023.tif'
-        after_path = '../satellite-change-detection/data/patna_after_flood_2023.tif'
+        from huggingface_hub import hf_hub_download
+        before_path = hf_hub_download(
+            repo_id='krsnawrx/bihar-flood-mapper',
+            filename='patna_before_flood_2023.tif',
+            repo_type='model'
+        )
+        after_path = hf_hub_download(
+            repo_id='krsnawrx/bihar-flood-mapper',
+            filename='patna_after_flood_2023.tif',
+            repo_type='model'
+        )
     elif before_file and after_file:
         with tempfile.NamedTemporaryFile(suffix='.tif', delete=False) as f:
             f.write(before_file.read())
