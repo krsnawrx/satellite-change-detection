@@ -1,9 +1,9 @@
-#Bihar Flood Mapper
+#DeltaFlood
 
 Detects flood inundation extent from Sentinel-2 satellite imagery using a U-Net model.
 Built to map the 2023 Bihar floods around Patna.
 
-Live demo: https://bihar-flood-mapper.streamlit.app
+Live demo: https://deltaflood.streamlit.app
 
 ![Flood Detection Result](flood_result.png)
 
@@ -46,7 +46,7 @@ The live demo runs on subsampled imagery (25.09 sq km) due to free-tier memory c
 
 #Model
 
-https://huggingface.co/krsnawrx/bihar-flood-mapper
+https://huggingface.co/krsnawrx/deltaflood
 
 #Known limitations
 

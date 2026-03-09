@@ -10,7 +10,7 @@ import os
 DEVICE = 'cpu'  # Streamlit Cloud has no GPU
 PATCH_SIZE = 256
 
-st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
+st.set_page_config(page_title="DeltaFlood", layout="wide")
 
 @st.cache_resource
 def load_model():
