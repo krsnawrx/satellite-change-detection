@@ -16,7 +16,7 @@ st.set_page_config(page_title="Bihar Flood Mapper", layout="wide")
 def load_model():
     from huggingface_hub import hf_hub_download
     model_path = hf_hub_download(
-        repo_id='krsnawrx/bihar-flood-mapper',
+        repo_id='krsnawrx/deltaflood',
         filename='best_model.pth',
         repo_type='model',
         token=os.environ.get('HF_TOKEN')
@@ -65,7 +65,7 @@ def norm(x):
     return np.clip(x, 0, 1)
 
 # UI
-st.title("Bihar Flood Mapper")
+st.title("DeltaFlood")
 st.markdown("Upload pre and post flood Sentinel-2 GeoTIFF images to detect flooded areas using a U-Net deep learning model.")
 
 col1, col2 = st.columns(2)
@@ -84,13 +84,13 @@ if st.button("Run Detection", type="primary"):
         from huggingface_hub import hf_hub_download
         token = os.environ.get('HF_TOKEN')
         before_path = hf_hub_download(
-            repo_id='krsnawrx/bihar-flood-mapper',
+            repo_id='krsnawrx/deltaflood',
             filename='patna_before_flood_2023.tif',
             repo_type='model',
             token=token
         )
         after_path = hf_hub_download(
-            repo_id='krsnawrx/bihar-flood-mapper',
+            repo_id='krsnawrx/deltaflood',
             filename='patna_after_flood_2023.tif',
             repo_type='model',
             token=token
