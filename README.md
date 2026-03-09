@@ -15,7 +15,8 @@ and let a model figure out what changed. In this case, what changed is water.
 The pipeline goes from raw GEE data export all the way to a web interface where
 you can upload any two Sentinel-2 images and get a flood map back.
 
-Detected *38.44 sq km* of inundation around Patna during peak monsoon 2023.
+Full resolution inference detects 38.44 sq km  of inundation.
+The live demo runs on subsampled imagery (25.09 sq km) due to free-tier memory constraints.
 
 #How it works
 
@@ -39,7 +40,8 @@ Detected *38.44 sq km* of inundation around Patna during peak monsoon 2023.
 | Metric | Value |
 |---|---|
 | Validation IoU | 0.6477 |
-| Flooded area (Patna 2023) | 38.44 sq km |
+| Flooded area detected (full res) | 38.44 sq km |
+| Flooded area detected (web demo) | ~25 sq km |
 | Image resolution | 10m/pixel |
 
 #Model
