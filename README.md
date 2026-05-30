@@ -1,4 +1,4 @@
-#DeltaFlood
+DeltaFlood
 
 Detects flood inundation extent from Sentinel-2 satellite imagery using a U-Net model.
 Built to map the 2023 Bihar floods around Patna.
@@ -7,7 +7,7 @@ Live demo: https://deltaflood.streamlit.app
 
 ![Flood Detection Result](flood_result.png)
 
-##Overview
+Overview
 
 The idea is simple — compare a before and after satellite image of the same area,
 and let a model figure out what changed. In this case, what changed is water.
@@ -18,7 +18,7 @@ you can upload any two Sentinel-2 images and get a flood map back.
 Full resolution inference detects 38.44 sq km  of inundation.
 The live demo runs on subsampled imagery (25.09 sq km) due to free-tier memory constraints.
 
-#How it works
+How it works
 
 1. Pull before/after Sentinel-2 image pairs from Google Earth Engine
 2. Use NDWI thresholding to generate flood labels (ground truth)
@@ -28,14 +28,14 @@ The live demo runs on subsampled imagery (25.09 sq km) due to free-tier memory c
 6. Run sliding window inference on the full image
 7. Output a flood mask with area in sq km
 
-#Stack
+Stack
 
 - Google Earth Engine — data collection
 - PyTorch + segmentation-models-pytorch — model training
 - Streamlit — web interface
 - Hugging Face — model hosting
 
-#Results
+Results
 
 | Metric | Value |
 |---|---|
@@ -44,11 +44,11 @@ The live demo runs on subsampled imagery (25.09 sq km) due to free-tier memory c
 | Flooded area detected (web demo) | ~25 sq km |
 | Image resolution | 10m/pixel |
 
-#Model
+Model
 
 https://huggingface.co/krsnawrx/deltaflood
 
-#Known limitations
+Known limitations
 
 Cloud cover during monsoon season causes false positives in the flood mask.
 The model is trained on a single region and may need fine-tuning for other geographies.
